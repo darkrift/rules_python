@@ -461,6 +461,12 @@ def _whl_library_impl(rctx):
             )
             entry_points[entry_point_without_py] = entry_point_script_name
 
+        purl = "pkg:pypi/{}@{}".format(
+            # https://github.com/package-url/purl-spec/blob/main/types-doc/pypi-definition.md#name-definition
+            metadata.name.replace("_", "-").lower(),
+            metadata.version,
+        )
+
         build_file_contents = generate_whl_library_build_bazel(
             name = whl_path.basename,
             sdist_filename = sdist_filename,
@@ -481,6 +487,7 @@ def _whl_library_impl(rctx):
             group_name = rctx.attr.group_name,
             namespace_package_files = namespace_package_files,
             extras = requirement(rctx.attr.requirement).extras,
+            purl = purl,
         )
     else:
         metadata = json.decode(rctx.read("metadata.json"))
@@ -511,6 +518,11 @@ def _whl_library_impl(rctx):
             entry_points[entry_point_without_py] = entry_point_script_name
 
         namespace_package_files = pypi_repo_utils.find_namespace_package_files(rctx, rctx.path("site-packages"))
+        purl = "pkg:pypi/{}@{}".format(
+            # https://github.com/package-url/purl-spec/blob/main/types-doc/pypi-definition.md#name-definition
+            metadata.name.replace("_", "-").lower(),
+            metadata.version,
+        )
 
         build_file_contents = generate_whl_library_build_bazel(
             name = whl_path.basename,
@@ -531,6 +543,7 @@ def _whl_library_impl(rctx):
                 "pypi_version={}".format(metadata["version"]),
             ],
             namespace_package_files = namespace_package_files,
+            purl = purl,
         )
 
     # Delete these in case the wheel had them. They generally don't cause
@@ -538,7 +551,13 @@ def _whl_library_impl(rctx):
     rctx.file("WORKSPACE")
     rctx.file("WORKSPACE.bazel")
     rctx.file("MODULE.bazel")
-    rctx.file("REPO.bazel")
+    rctx.file("REPO.bazel", """\
+repo(
+    default_package_metadata = [
+        "//:package_metadata",
+    ],
+)
+""")
 
     paths = list(rctx.path(".").readdir())
     for _ in range(10000000):
