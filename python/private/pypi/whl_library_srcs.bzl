@@ -31,7 +31,6 @@ _VENV_SITE_PACKAGES_FLAG = Label("//python/config_settings:venvs_site_packages")
 def whl_library_srcs(
         *,
         name,
-        whl_file = None,
         sdist_filename = None,
         data_exclude = [],
         srcs_exclude = [],
@@ -58,7 +57,6 @@ def whl_library_srcs(
     Args:
         name: {type}`str` The file to match for including it into the `whl`
             filegroup. This may be also parsed to generate extra metadata.
-        whl_file: {type}`str | None` The label of an externally stored wheel.
         sdist_filename: {type}`str | None` If the wheel was built from an sdist,
             the filename of the sdist.
         visibility: {type}`list[str]` The visibility of the source targets.
@@ -180,7 +178,7 @@ def whl_library_srcs(
     if hasattr(native, "filegroup"):
         native.filegroup(
             name = WHEEL_FILE,
-            srcs = [whl_file or name],
+            srcs = [name],
             visibility = visibility,
         )
 

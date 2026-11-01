@@ -17,8 +17,8 @@ workspace(name = "rules_python")
 # Everything below this line is used only for developing rules_python. Users
 # should not copy it to their WORKSPACE.
 
-# Loaded by Starlark files (e.g. purl.bzl) that the loads below pull in, so it
-# must be defined before them.
+# REPO.bazel's default_package_metadata makes every package in this repo depend
+# on @package_metadata, so it must be defined before any other load.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
@@ -87,14 +87,6 @@ python_register_multi_toolchains(
     # Integration tests verify each version, so register all of them.
     python_versions = PYTHON_VERSIONS,
 )
-
-load("//python/uv:repositories.bzl", "uv_toolchains_manifest")
-
-uv_toolchains_manifest(name = "uv_manifest")
-
-load("@uv_manifest//:dist_manifest.bzl", "uv_register_toolchains")
-
-uv_register_toolchains(name = "uv")
 
 # Used for Bazel CI
 http_archive(

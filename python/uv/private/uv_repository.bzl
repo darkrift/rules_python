@@ -12,7 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Create repositories for uv toolchain dependencies"""
+"""
+EXPERIMENTAL: This is experimental and may be removed without notice
+
+Create repositories for uv toolchain dependencies
+"""
 
 load("//python/private:auth.bzl", "AUTH_ATTRS", "get_auth")
 

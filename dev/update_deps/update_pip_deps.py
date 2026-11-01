@@ -72,8 +72,6 @@ def _generate_report(requirements_txt: pathlib.Path) -> dict:
             "install",
             "--dry-run",
             "--ignore-installed",
-            "--only-binary=:all:",
-            "--platform=any",
             "--report",
             f"{tmp_path}",
             "-r",

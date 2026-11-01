@@ -29,10 +29,9 @@ class AddTargetSettingsTest(runner.TestCase):
         """
         result = self.run_bazel("build", "//:custom_no_toolchain_test", check=False)
         self.assertNotEqual(result.exit_code, 0, "Expected build to fail")
-        # Bazel 10 reworded "found for types" to "found for target platform".
         self.assert_result_matches(
             result,
-            r"No matching toolchains found for (types|target platform)",
+            r"No matching toolchains found for types",
         )
 
 

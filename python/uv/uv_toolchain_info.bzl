@@ -12,7 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""The `UvToolchainInfo` provider."""
+"""The `UvToolchainInfo` provider.
+
+EXPERIMENTAL: This is experimental and may be removed without notice
+"""
 
 load("//python/uv/private:uv_toolchain_info.bzl", _UvToolchainInfo = "UvToolchainInfo")
 

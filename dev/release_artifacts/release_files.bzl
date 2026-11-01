@@ -5,11 +5,6 @@ load("//python/private:common_labels.bzl", "labels")  # buildifier: disable=bzl-
 _FEATURES = "//command_line_option:features"
 _RUSTC_FLAGS = "@rules_rust//rust/settings:extra_rustc_flags"
 
-_ReleaseFilesInfo = provider(
-    doc = "Files built by _release_files, excluding the .txt manifest.",
-    fields = ["files"],
-)
-
 def _release_transition_impl(settings, attr):
     features = []
     rustc_flags = []
@@ -87,10 +82,7 @@ def _release_files_impl(ctx):
         # an unterminated last line, and build.sh adds a line after the paths.
         content = "".join([file.path + "\n" for file in files]),
     )
-    return [
-        DefaultInfo(files = depset([manifest] + files)),
-        _ReleaseFilesInfo(files = files),
-    ]
+    return [DefaultInfo(files = depset([manifest] + files))]
 
 _release_files = rule(
     implementation = _release_files_impl,
@@ -176,17 +168,8 @@ def _cross_compiled_files_impl(ctx):
         return [DefaultInfo()]
 
     # With a transition, ctx.attr.src is a list: one target per platform.
-    files = []
-    for src in ctx.attr.src:
-        files.extend(src[_ReleaseFilesInfo].files)
-    manifest = ctx.actions.declare_file(ctx.label.name + ".txt")
-    ctx.actions.write(
-        output = manifest,
-        # End every line with "\n", including the last: `while read` loops skip
-        # an unterminated last line, and build.sh adds a line after the paths.
-        content = "".join([file.path + "\n" for file in files]),
-    )
-    return [DefaultInfo(files = depset([manifest] + files))]
+    files = [src[DefaultInfo].files for src in ctx.attr.src]
+    return [DefaultInfo(files = depset(transitive = files))]
 
 cross_compiled_files = rule(
     implementation = _cross_compiled_files_impl,
@@ -205,7 +188,6 @@ this builds nothing.
             cfg = _platforms_transition,
             doc = "The target to build.",
             mandatory = True,
-            providers = [_ReleaseFilesInfo],
         ),
     },
 )

@@ -1,47 +1,24 @@
-load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
-load("//python/uv:lock.bzl", "lock")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
-lock(
+compile_pip_requirements(
     name = "multiple_requirements_in",
     srcs = [
         "requirements_1.in",
         "requirements_2.in",
     ],
-    out = "multiple_requirements_in.txt",
-    # It seems that the CI remote executors for the RBE do not have network
-    # connectivity due to current CI setup.
-    tags = ["no-remote-exec"],
-    visibility = ["//:__subpackages__"],
+    requirements_txt = "multiple_requirements_in.txt",
 )
 
-diff_test(
-    name = "multiple_requirements_in_test",
-    timeout = "short",
-    file1 = ":multiple_requirements_in",
-    file2 = "multiple_requirements_in.txt",
-)
-
-lock(
+compile_pip_requirements(
     name = "multiple_pyproject_toml",
     srcs = [
         "a/pyproject.toml",
         "b/pyproject.toml",
     ],
-    out = "multiple_pyproject_toml.txt",
-    # It seems that the CI remote executors for the RBE do not have network
-    # connectivity due to current CI setup.
-    tags = ["no-remote-exec"],
-    visibility = ["//:__subpackages__"],
+    requirements_txt = "multiple_pyproject_toml.txt",
 )
 
-diff_test(
-    name = "multiple_pyproject_toml_test",
-    timeout = "short",
-    file1 = ":multiple_pyproject_toml",
-    file2 = "multiple_pyproject_toml.txt",
-)
-
-lock(
+compile_pip_requirements(
     name = "multiple_inputs",
     srcs = [
         "a/pyproject.toml",
@@ -49,16 +26,5 @@ lock(
         "requirements_1.in",
         "requirements_2.in",
     ],
-    out = "multiple_inputs.txt",
-    # It seems that the CI remote executors for the RBE do not have network
-    # connectivity due to current CI setup.
-    tags = ["no-remote-exec"],
-    visibility = ["//:__subpackages__"],
-)
-
-diff_test(
-    name = "multiple_inputs_test",
-    timeout = "short",
-    file1 = ":multiple_inputs",
-    file2 = "multiple_inputs.txt",
+    requirements_txt = "multiple_inputs.txt",
 )

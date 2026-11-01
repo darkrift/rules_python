@@ -12,7 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""The `uv_toolchain` rule."""
+"""The `uv_toolchain` rule.
+
+EXPERIMENTAL: This is experimental and may be removed without notice
+"""
 
 load("//python/uv/private:uv_toolchain.bzl", _uv_toolchain = "uv_toolchain")
 

@@ -55,6 +55,5 @@ jobs:
           bazel run \
             --//python/config_settings:py_pbs_distribution=install_only_stripped \
             //dev/release -- add-backports \
-            "${ARGS[@]}" \
-            -- \
-            "${pr_array[@]}"
+            "${pr_array[@]}" \
+            "${ARGS[@]}"
