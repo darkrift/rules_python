@@ -88,6 +88,14 @@ python_register_multi_toolchains(
     python_versions = PYTHON_VERSIONS,
 )
 
+load("//python/uv:repositories.bzl", "uv_toolchains_manifest")
+
+uv_toolchains_manifest(name = "uv_manifest")
+
+load("@uv_manifest//:dist_manifest.bzl", "uv_register_toolchains")
+
+uv_register_toolchains(name = "uv")
+
 # Used for Bazel CI
 http_archive(
     name = "bazelci_rules",
